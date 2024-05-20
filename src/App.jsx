@@ -1,35 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+
+export default function App() {
+  const { watch, register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      selectedOptions: []
+    }
+  });
+
+  const onSubmit = data => console.log({...data});
+
+  const options = [
+    { value: "react", label: "React" },
+    { value: "nextjs", label: "Next.js" },
+    { value: "laravel", label: "Laravel" },
+    { value: "graphql", label: "GraphQL" },
+    { value: "nestjs", label: "NestJS" }
+  ];
+
+  console.log(errors)
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <div className="form-container">
+        <h1>Register</h1>
+        <form className="form" onSubmit={handleSubmit(onSubmit)}>
+          <label htmlFor="Firstname">
+            First Name
+            <input id="Firstname" className="text-input" type="text" {...register("Firstname", { required: true })} />
+          </label>
+          <label htmlFor="Lastname">
+            Last Name
+            <input id="Lastname" className="text-input" type="text" {...register("Lastname", { required: true })} />
+          </label>
+          <label htmlFor="Email">
+            Email
+            <input id="Email" className="text-input" type="text" {...register("Email", { required: true, pattern: /^\S+@\S+$/i })} />
+          </label>
+          <label htmlFor="Username">
+            Username
+            <input id="Username" className="text-input" type="text" {...register("Username", { required: true })} />
+          </label>
+          <label htmlFor="Password">
+            Password
+            <input id="Password" className="text-input" type="password" {...register("Password", { required: true })} />
+          </label>
+          <div className="topics">
+            <p>Topics of Interest</p>
+            {options.map(({ value, label }) => (
+              <label key={value}>
+                <input
+                  type="checkbox"
+                  value={value}
+                  {...register("selectedOptions")}
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+          <input type="submit" className='submit-button'/>
+        </form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
-
-export default App
